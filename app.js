@@ -1,9 +1,9 @@
-// Get references to HTML elements with the specified IDs
+// Get references to HTML elements with the specified IDs that are associated with the game and score displays.
 const game = document.getElementById('game')
 const scoreDisplay1 = document.getElementById('scoreDisplay1')
 const scoreDisplay2 = document.getElementById('scoreDisplay2')
 
-// Establish variables for game
+// Establish variables to keep track of game progress.
 let score1 = 0
 let score2 = 0
 let currentPlayer = 1
@@ -37,7 +37,7 @@ const categories  = [
 // Define the levels of difficulty per question within the category. 
 const levels = ['easy', 'medium', 'hard']
 
-// Define a function to handle flipping a card upon clicking
+// Define a function to handle flipping a card upon clicking. Initial card contents get cleared upon clicking. Question and true/false options are displayed and event listeners are set up. 
 const flipCard = (event) => {
     // Get the card that was clicked
     const card = event.currentTarget
@@ -70,12 +70,12 @@ const flipCard = (event) => {
     card.appendChild(trueButton)
     card.appendChild(falseButton)
 
-    // Disable click event listeners for all cards
+    // Disable click event listeners for all cards so that player is not able to click on other cards while answering specific question on hand.
     const allCards = Array.from(document.querySelectorAll('.card'))
     allCards.forEach(card => card.removeEventListener('click', flipCard))
 }
 
-// Define a function to address the result of the user's choice
+// Define a function for when the player selects "True" or "False" after flipping the card. Function checks if the chosen answer matches the correct answer, updates the player's score, and manipulates how to display the correct answer. 
 function getResult() {
     // Enable click event listeners for all cards
     const allCards = Array.from(document.querySelectorAll('.card'))
@@ -132,7 +132,7 @@ function getResult() {
     }
     }   
 
-// Define a function to add a category to the game
+// Define a function to add a category to the game - it creates a column for the category, styles it, iterates through difficulty levels to create cards with different values, fetches trivia questions from the API, and sets data attributes on the cards for question, answer and value.  
 const addCategory = (category) => {
     // Create a column for the category
     const column = document.createElement('div')
@@ -143,7 +143,7 @@ const addCategory = (category) => {
     game.append(column)
 
     
-    // Style the category name
+    // Style the category name without CSS
     column.style.font = 'Roboto'
     column.style.fontSize = '30px'
     column.style.fontWeight = 'bold'
@@ -158,7 +158,7 @@ const addCategory = (category) => {
         card.classList.add('card')
         // putting the card into the column
         column.append(card)
-        // Set the content of the card based on the difficulty level
+        // Set the content of the card based on the difficulty level (applying content without using HTML)
         if(level === 'easy') {
             card.innerHTML = '$100'
         }
@@ -176,8 +176,11 @@ const addCategory = (category) => {
             .then(data => {
                 console.log(data)
                 // Set the question, answer, and value as data attributes on the card
+                // "data-question" stores the question text.
                 card.setAttribute('data-question', data.results[0].question)
+                // "data-answer" stores the correct answer to the question.
                 card.setAttribute('data-answer', data.results[0].correct_answer)
+                // "data-value" stores the value of the question (money amount) as a numeric value
                 card.setAttribute('data-value', card.innerHTML.replace('$', ''))
     })
             .then(done => card.addEventListener('click', flipCard))
